@@ -42,4 +42,8 @@ public class Graph<T> {
         links.values().stream().flatMap(Collection::stream).forEach(result::remove);
         return result;
     }
+
+    public List<Set<T>> components() {
+        return GraphUtil.components(nodes, this::getNeighbours);
+    }
 }

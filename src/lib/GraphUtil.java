@@ -67,6 +67,18 @@ public class GraphUtil {
         return explored;
     }
 
+    public static <T> List<Set<T>> components(Collection<T> nodes, Function<T, Iterable<T>> neighbours) {
+        Set<T> todo = new HashSet<>(nodes);
+        List<Set<T>> result = new ArrayList<>();
+        while (!todo.isEmpty()) {
+            T node = todo.iterator().next();
+            Set<T> component = reachable(node, neighbours);
+            result.add(component);
+            todo.removeAll(component);
+        }
+        return result;
+    }
+
     public static <T extends Comparable<T>> int dijkstra(T start, Function<T, Map<T, Integer>> neighbours, Predicate<T> endPredicate) {
         Map<T, Integer> distances = new HashMap<>();
         SortedSet<DijkstraNodeDistance<T>> queue = new TreeSet<>(List.of(new DijkstraNodeDistance<T>(0, start)));
