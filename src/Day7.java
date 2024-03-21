@@ -1,12 +1,49 @@
+import lib.CollectionUtil;
 import lib.Graph;
 import lib.InputUtil;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Day7 {
     public static void main(String[] args) throws IOException {
         List<String> input = InputUtil.readAsLines("input7.txt");
+        Graph<Node> graph = getNodeGraph(input);
+        Node root = first(graph);
+        second(graph, root);
+    }
+
+    private static Node first(Graph<Node> graph) {
+        Set<Node> roots = graph.getRootNodes();
+        Node root = roots.iterator().next();
+        System.out.println(root.name);
+        return root;
+    }
+
+    private static void second(Graph<Node> graph, Node root) {
+        weights(graph, root);
+    }
+
+    private static int weights(Graph<Node> graph, Node node) {
+        Map<Node, Integer> w = graph.getNeighbours(node).stream()
+                .collect(Collectors.toMap(n -> n, n -> weights(graph, n)));
+        Set<Integer> sw = new HashSet<>(w.values());
+        if (sw.size() == 2) {
+            int wrongWeight = CollectionUtil.leastCommonValue(w.values());
+            int correctWeight = CollectionUtil.mostCommonValue(w.values());
+            int adaptWeight = correctWeight - wrongWeight;
+            int adaptedWeight = w.entrySet().stream()
+                    .filter(entry -> entry.getValue() == wrongWeight)
+                    .mapToInt(entry -> entry.getKey().weight + adaptWeight)
+                    .findFirst()
+                    .orElseThrow();
+            System.out.println(adaptedWeight);
+        }
+        return node.weight + w.values().stream().mapToInt(x -> x).sum();
+    }
+
+    private static Graph<Node> getNodeGraph(List<String> input) {
         Map<String, Node> nodes = new HashMap<>();
         for (String s : input) {
             String[] sp = s.split("[ ()]+");
@@ -26,8 +63,7 @@ public class Day7 {
                 }
             }
         }
-        Set<Node> roots = graph.getRootNodes();
-        System.out.println(roots.iterator().next().name);
+        return graph;
     }
 
     static class Node {
