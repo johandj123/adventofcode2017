@@ -38,14 +38,4 @@ public class Day13 {
     private static int period(int range) {
         return 2 * (range - 1);
     }
-
-    private static int position(int range,int time) {
-        int period = period(range);
-        int x = time % period;
-        if (x < range) {
-            return x;
-        } else {
-            return period - x;
-        }
-    }
 }
