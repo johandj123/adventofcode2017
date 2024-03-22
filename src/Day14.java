@@ -1,3 +1,4 @@
+import lib.GraphUtil;
 import lib.InputUtil;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ public class Day14 {
     public static void main(String[] args) throws IOException {
         String input = InputUtil.readAsString("input14.txt");
         first(input);
+        second(input);
     }
 
     private static void first(String input) {
@@ -20,6 +22,25 @@ public class Day14 {
             }
         }
         System.out.println(count);
+    }
+
+    private static void second(String input) {
+        Set<Position> positions = new HashSet<>();
+        for (int y = 0; y < 128; y++) {
+            byte[] hash = knotHash(input + "-" + y);
+            int x = 0;
+            for (byte b : hash) {
+                String s = Integer.toBinaryString((b & 0xff) | 0x100).substring(1);
+                for (char c : s.toCharArray()) {
+                    if (c == '1') {
+                        positions.add(new Position(x, y));
+                    }
+                    x++;
+                }
+            }
+        }
+        var components = GraphUtil.components(positions, position -> Position.DIRECTIONS.stream().map(position::add).filter(positions::contains).collect(Collectors.toList()));
+        System.out.println(components.size());
     }
 
     private static byte[] knotHash(String input) {
@@ -59,5 +80,39 @@ public class Day14 {
             result[i] = (byte) value;
         }
         return result;
+    }
+
+    static class Position {
+        static final List<Position> DIRECTIONS = List.of(
+                new Position(-1, 0),
+                new Position(1, 0),
+                new Position(0, -1),
+                new Position(0, 1)
+        );
+
+        final int x;
+        final int y;
+
+        public Position(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        Position add(Position o) {
+            return new Position(x + o.x, y + o.y);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Position position = (Position) o;
+            return x == position.x && y == position.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
+        }
     }
 }
