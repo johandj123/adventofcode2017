@@ -1,17 +1,37 @@
 import lib.InputUtil;
+import lib.StepUtil;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Day16 {
+
+    public static final String START_STRING = "abcdefghijklmnop";
+
     public static void main(String[] args) throws IOException {
         String[] sp = InputUtil.readAsString("input16.txt").split(",");
-        List<Character> list = IntStream.rangeClosed('a', 'p').mapToObj(x -> (char) x).collect(Collectors.toList());
+        first(sp);
+        second(sp);
+    }
+
+    private static void first(String[] sp) {
+        String result = dance(START_STRING, sp);
+        System.out.println(result);
+    }
+
+    private static void second(String[] sp) {
+        String result = StepUtil.performStepsWithCycleDetection(START_STRING, 1000000000, string -> dance(string, sp));
+        System.out.println(result);
+    }
+
+    private static String dance(String string, String[] sp) {
+        List<Character> list = new ArrayList<>();
+        for (char c : string.toCharArray()) {
+            list.add(c);
+        }
         for (String s : sp) {
             char c = s.charAt(0);
             if (c == 's') {
@@ -38,7 +58,8 @@ public class Day16 {
         for (char c : list) {
             sb.append(c);
         }
-        System.out.println(sb);
+        String result = sb.toString();
+        return result;
     }
 
     private static void swap(List<Character> list, Integer indexA, Integer indexB) {
