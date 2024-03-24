@@ -19,11 +19,65 @@ public class Day23 {
     }
 
     private static void second(List<String> instructions) {
-        // TODO Too slow
-        Computer computer = new Computer(instructions);
-        computer.registers.put("a", 1L);
-        computer.run();
-        System.out.println(computer.getValue("h"));
+        // Executing the actual program is too slow
+//        Computer computer = new Computer(instructions);
+//        computer.registers.put("a", 1L);
+//        computer.run();
+//        System.out.println(computer.getValue("h"));
+        System.out.println(program(1));
+    }
+
+    private static int program(int a)
+    {
+        // Code below is the puzzle program translated to Java, with some optimizations
+        int b = 0;
+        int c = 0;
+        int d = 0;
+        int e = 0;
+        int f = 0;
+        int g = 0;
+        int h = 0;
+
+        b = 81;
+        c = b;
+        if (a != 0) {
+            b *= 100;
+            b += 100000;
+            c = b;
+            c += 17000;
+        }
+        while (true) {
+            f = isPrime(b) ? 1 : 0;
+            // Code below is a very ineffecient way to determine is a number is prime
+//            f = 1;
+//            d = 2;
+//            do {
+//                e = 2;
+//                do {
+//                    if (d * e == b) {
+//                        f = 0;
+//                    }
+//                    e++;
+//                } while (e != b);
+//                d++;
+//            } while (d != b);
+            if (f == 0) {
+                h++;
+            }
+            if (b == c) {
+                return h;
+            }
+            b += 17;
+        }
+    }
+
+    private static boolean isPrime(int number) {
+        for (int i = 2; i < number / 2; i++) {
+            if ((number % i) == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static class Computer {
