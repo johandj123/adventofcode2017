@@ -130,7 +130,7 @@ public class CharMatrix {
         for (int i = 0; i < getWidth(); i++) {
             s[i] = getColumn(i);
         }
-        return new CharMatrix(s);
+        return new CharMatrix(s, fill);
     }
 
     public CharMatrix mirrorHorizontal()
@@ -165,6 +165,24 @@ public class CharMatrix {
             }
         }
         return Optional.empty();
+    }
+
+    public CharMatrix part(int x0,int y0,int w,int h) {
+        CharMatrix result = new CharMatrix(h, w, fill);
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                result.set(x, y, get(x + x0, y + y0));
+            }
+        }
+        return result;
+    }
+
+    public void insert(int x0,int y0,CharMatrix charMatrix) {
+        for (int y = 0; y < charMatrix.getHeight(); y++) {
+            for (int x = 0; x < charMatrix.getWidth(); x++) {
+                set(x + x0, y + y0, charMatrix.get(x, y));
+            }
+        }
     }
 
     @Override
